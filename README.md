@@ -1,164 +1,25 @@
-# AI Drone Landing Zone Evaluation System
+# Drone landing zone mapping
 
-Group Member IDNos.
-Anurag Padhy(Leader) - 2023A3PS0301H
-Khushal Vardhan Neeli - 2023B4A40680H
-Harshit Verma - 2022A3PS0510H
+Given an overhead photograph and a target pixel, the program searches for a nearby patch that can fit a delivery footprint. It labels the terrain, estimates relative depth, and ranks candidate patches by distance, roughness, and the terrain penalties for the mission. The result is a proposed location drawn on the image.
 
-## Project Overview
+## Follow one image through the code
 
-This project implements an Artificial Intelligence system for autonomous drone package delivery landing zone selection using:
+1. [main.py](src/main.py) loads the image and models.
+2. [geometry.py](src/geometry.py) searches candidate footprints. [semantic_brain.py](src/semantic_brain.py) interprets the mission settings.
+3. [utils.py](src/utils.py) draws the result and analysis panels.
 
-- Semantic Segmentation
-- Monocular Depth Estimation (MiDaS)
-- Knowledge Graph Semantic Reasoning
-- Geometric Safe-Zone Search
-- Cost Function Optimization
+## Run an evaluation
 
-The system identifies the safest and closest landing region relative to a user-specified target coordinate.
+From the repository root, install the dependencies. Run the Python scripts from `src` so their relative paths resolve.
 
----
-
-# Features
-
-- 4 Encoder + 4 Decoder CNN architecture
-- Semantic segmentation on TU Graz Semantic Drone Dataset
-- Intel MiDaS depth estimation
-- Binary safe-zone generation
-- Rotational candidate search
-- Knowledge-graph-based semantic reasoning
-- Weighted cost optimization
-- GPU acceleration using CUDA
-
----
-
-*** Include dataset (semantic_drone_dataset/) in main folder if you want to train model.
-
-## Folder Structure
-
-```text
-CSF407_2026_2023A3PS0301H_Assignment-II/
-│
-├── src/
-│   ├── config.py
-│   ├── dataset.py
-│   ├── geometry.py
-│   ├── knowledge_graph.py
-│   ├── main.py
-│   ├── model.py
-│   ├── semantic_brain.py
-│   ├── train.py
-│   ├── utils.py
-│   ├── split_data.py
-│   ├── best_model.pth
-│   ├── mission_config.json
-│   ├── clean_dataset/
-│   └── test_images/
-│
-├── semantic_drone_dataset/
-├── requirements.txt
-├── config.yml
-└── README.md
-```
-
-# Installation
-
-Install all dependencies:
-
-```bash
-pip install -r requirements.txt
-
----
-# Important Execution Note
-
-All commands must be executed from inside the `src/` directory.
-
-Example:
-
-```bash
+```sh
+python -m pip install -r requirements.txt
 cd src
-python train.py
+python main.py path/to/aerial-image.jpg 400 300
 ```
 
-This is required because dataset and configuration paths are defined relative to the `src/` folder.
+Replace the image path and coordinates with a pixel in your image. Inference requires `best_model.pth` in the working directory and the MiDaS depth model. For training, extract the TU Graz Semantic Drone Dataset under `semantic_drone_dataset/` at the repository root, then run `python split_data.py` and `python train.py` from `src`. Check the paths in [the split script](src/split_data.py) before starting.
 
-# Dataset Preparation
+## Project credits
 
-Run:
-
-```bash
-python split_data.py
-```
-
-This creates:
-
-- clean_dataset/train
-- clean_dataset/val
-
----
-
-# ANN Training
-
-Run:
-
-```bash
-python train.py
-```
-
-The best model checkpoint will automatically be saved as:
-
-```
-best_model.pth
-```
-
----
-
-# Running the Full AI Pipeline
-
-Run:
-
-```bash
-python main.py test_images/sample.jpg 400 300
-```
-
-Where:
-- 400 = target X coordinate
-- 300 = target Y coordinate
-
----
-
-# Expected Outputs
-
-The system generates:
-
-## output.jpg
-- Final landing placement visualization
-- Green optimal bounding box
-- Target coordinate marker
-
-## output_analysis.jpg
-6-panel dashboard:
-1. Original Image
-2. Semantic Segmentation
-3. Depth Map
-4. Safe Mask
-5. Best Placement
-6. Cost Breakdown
-
----
-
-# Technologies Used
-
-- Python
-- PyTorch
-- OpenCV
-- MiDaS
-- CUDA
-- NumPy
-- Matplotlib
-
----
-
-BITS Pilani Hyderabad Campus  
-CS F407 Artificial Intelligence  
-Project Assignment-II
+BITS Pilani Hyderabad, CS F407 Artificial Intelligence, Assignment II. Team members were Anurag Padhy (lead), Khushal Vardhan Neeli, and Harshit Verma.
